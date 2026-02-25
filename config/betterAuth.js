@@ -20,13 +20,13 @@ const auth = betterAuth({
     ],
     advanced: {
         cookiePrefix: 'better-auth',
-        useSecureCookies: false, // Set to false for localhost
+        useSecureCookies: isProd,
         crossSubDomainCookies: {
             enabled: false
         },
         defaultCookieAttributes: {
-            sameSite: 'lax',
-            secure: false,
+            sameSite: isProd ? 'none' : 'lax',
+            secure: isProd,
             httpOnly: true,
             path: '/'
         }
