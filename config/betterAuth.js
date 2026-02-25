@@ -3,7 +3,13 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db, schema } from '../db/index.js';
 
 const isProd = process.env.NODE_ENV === 'production';
-const clientUrl = (process.env.CLIENT_URL || 'http://localhost:3005').replace(/\/$/, '');
+const normalizeUrl = (value) => value ? value.trim().replace(/\/$/, '') : '';
+const clientUrl = normalizeUrl(process.env.CLIENT_URL) || 'http://localhost:3005';
+const extraClientUrls = (process.env.CLIENT_URLS || '')
+    .split(',')
+    .map(normalizeUrl)
+    .filter(Boolean);
+const trustedOrigins = Array.from(new Set([clientUrl, ...extraClientUrls]));
 
 const auth = betterAuth({
     database: drizzleAdapter(db, {
@@ -17,9 +23,7 @@ const auth = betterAuth({
     }),
     secret: process.env.BETTER_AUTH_SECRET,
     baseURL: `${process.env.BETTER_AUTH_URL || 'http://localhost:5000'}/api/auth/better`,
-    trustedOrigins: [
-        clientUrl
-    ],
+    trustedOrigins,
     advanced: {
         cookiePrefix: 'better-auth',
         useSecureCookies: isProd,
