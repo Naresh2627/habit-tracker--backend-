@@ -3,6 +3,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db, schema } from '../db/index.js';
 
 const isProd = process.env.NODE_ENV === 'production';
+const clientUrl = (process.env.CLIENT_URL || 'http://localhost:3005').replace(/\/$/, '');
 
 const auth = betterAuth({
     database: drizzleAdapter(db, {
@@ -17,8 +18,7 @@ const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
     baseURL: `${process.env.BETTER_AUTH_URL || 'http://localhost:5000'}/api/auth/better`,
     trustedOrigins: [
-        process.env.CLIENT_URL || 'http://localhost:3005',
-    
+        clientUrl
     ],
     advanced: {
         cookiePrefix: 'better-auth',
@@ -59,7 +59,7 @@ const auth = betterAuth({
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
             redirectURI: `${process.env.BETTER_AUTH_URL || 'http://localhost:5000'}/api/auth/better/callback/google`,
             // After OAuth callback, redirect to client app
-            callbackURL: process.env.CLIENT_URL || 'http://localhost:3005'
+            callbackURL: clientUrl
         }
     } : {}
 });
