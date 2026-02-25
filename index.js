@@ -24,16 +24,15 @@ app.use(helmet());
 app.use(morgan('combined'));
 
 // CORS middleware
+const normalizeUrl = (value) => value ? value.trim().replace(/\/$/, '') : '';
 const allowedOrigins = [
-    'https://habit-tracker-frontend-smoky.vercel.app',
     'http://localhost:3005',
-    process.env.CLIENT_URL
+    normalizeUrl(process.env.CLIENT_URL),
+    ...(process.env.CLIENT_URLS || '').split(',').map(normalizeUrl)
 ].filter(Boolean);
 
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production'
-        ? process.env.CLIENT_URL
-        : allowedOrigins,
+    origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
