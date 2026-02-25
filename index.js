@@ -25,7 +25,7 @@ app.use(morgan('combined'));
 
 // CORS middleware
 const allowedOrigins = [
-    'https://habit-tracker-backend-1-86at.onrender.com',
+    'https://habit-tracker-frontend-smoky.vercel.app',
     'http://localhost:3005',
     process.env.CLIENT_URL
 ].filter(Boolean);
